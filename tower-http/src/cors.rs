@@ -127,13 +127,10 @@ impl CorsLayer {
     /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
     pub fn allow_headers<I>(mut self, headers: I) -> Self
     where
-        I: IntoIterator<Item = HeaderValue>,
+        I: IntoIterator<Item = HeaderName>,
     {
-        self.allow_headers = separated_by_commas(
-            headers
-                .into_iter()
-                .map(|value| value.to_str().unwrap().to_string()),
-        );
+        self.allow_headers =
+            separated_by_commas(headers.into_iter().map(|value| value.to_string()));
         self
     }
 
@@ -406,7 +403,7 @@ impl<S> Cors<S> {
     /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
     pub fn allow_headers<I>(self, headers: I) -> Self
     where
-        I: IntoIterator<Item = HeaderValue>,
+        I: IntoIterator<Item = HeaderName>,
     {
         self.map_layer(|layer| layer.allow_headers(headers))
     }
